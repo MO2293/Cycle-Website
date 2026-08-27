@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:cyclehaven-test;DB_CLOSE_DELAY=-1;MODE=LEGACY
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+
+cyclehaven:
+  jwt:
+    secret: dGVzdC1zZWNyZXQtdGVzdC1zZWNyZXQtdGVzdC1zZWNyZXQtdGVzdC1zZWNyZXQtMTIzNA==
+    expiration-minutes: 60
+  cors:
+    allowed-origins: http://localhost:5173
+  seed:
+    enabled: false
+    admin-email: admin@cyclehaven.com
+    admin-password: AdminPass123!
+
+logging:
+  level:
+    org.hibernate.SQL: WARN
