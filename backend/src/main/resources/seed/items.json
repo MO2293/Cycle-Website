@@ -1,0 +1,132 @@
+[
+  {
+    "slug": "ghostrider-go",
+    "name": "Ghostrider Go!",
+    "category": "ELECTRIC",
+    "model": "Electra",
+    "price": 4049.99,
+    "colour": "Black",
+    "quantity": 6,
+    "description": "A hydroformed frame in ultra-gloss black with chrome-polished finishing. The integrated 500Wh battery sits low in the down tube to keep the centre of gravity where it belongs, and the mid-drive motor adds assistance up to 32 km/h without ever feeling like it is doing the work for you."
+  },
+  {
+    "slug": "voltway-commuter",
+    "name": "Voltway Commuter",
+    "category": "ELECTRIC",
+    "model": "VW-500",
+    "price": 2899.0,
+    "colour": "Grey",
+    "quantity": 11,
+    "description": "Built for people who gave up on the bus. A 70 km assisted range, hydraulic disc brakes that behave in the rain, integrated lighting wired to the main battery, and full-coverage fenders so arriving at work does not mean changing clothes."
+  },
+  {
+    "slug": "summit-trail-29",
+    "name": "Summit Trail 29",
+    "category": "MOUNTAIN",
+    "model": "ST-29",
+    "price": 1849.5,
+    "colour": "Green",
+    "quantity": 8,
+    "description": "A 29-inch trail hardtail with 130mm of front travel and geometry slack enough to stay composed on steep descents. The aluminium frame carries internal cable routing and clearance for 2.6-inch tyres when conditions turn genuinely rough."
+  },
+  {
+    "slug": "boulder-ridge-pro",
+    "name": "Boulder Ridge Pro",
+    "category": "MOUNTAIN",
+    "model": "BR-Pro",
+    "price": 3299.0,
+    "colour": "Orange",
+    "quantity": 3,
+    "description": "Full-suspension carbon with 140mm travel front and rear. A four-bar linkage keeps the rear wheel tracking the ground through braking bumps, which is the difference between surviving a rock garden and actually carrying speed through one."
+  },
+  {
+    "slug": "velocity-rs-carbon",
+    "name": "Velocity RS Carbon",
+    "category": "ROAD",
+    "model": "RS-Carbon",
+    "price": 4599.0,
+    "colour": "Red",
+    "quantity": 4,
+    "description": "A sub-8kg carbon race frame with fully internal routing and a seatpost tuned to take the edge off long days. Electronic shifting front and rear, and tyre clearance up to 32mm for when the route includes surfaces the designers did not intend."
+  },
+  {
+    "slug": "tempo-endurance",
+    "name": "Tempo Endurance",
+    "category": "ROAD",
+    "model": "TE-2",
+    "price": 2149.0,
+    "colour": "Blue",
+    "quantity": 9,
+    "description": "Endurance geometry with a taller stack and longer wheelbase, built for riders who measure days in hours rather than minutes. Mounts for mudguards and a rack are included, so it converts to a winter trainer without complaint."
+  },
+  {
+    "slug": "streetline-fixie",
+    "name": "Streetline Fixie",
+    "category": "ROAD",
+    "model": "SL-1",
+    "price": 749.99,
+    "colour": "White",
+    "quantity": 14,
+    "description": "A steel single-speed with a flip-flop hub, so it runs fixed or freewheel depending on the day and your confidence. Deep-section rims, riser bars, and almost nothing on it that can break."
+  },
+  {
+    "slug": "airborne-bmx-20",
+    "name": "Airborne BMX 20",
+    "category": "BMX",
+    "model": "AB-20",
+    "price": 629.0,
+    "colour": "Silver",
+    "quantity": 17,
+    "description": "A chromoly park bike with a raw brushed finish, sealed mid bottom bracket and a three-piece crank. Gyro-compatible with a removable brake mount, whether or not you intend to use it."
+  },
+  {
+    "slug": "dirt-devil-bmx",
+    "name": "Dirt Devil BMX",
+    "category": "BMX",
+    "model": "DD-Pro",
+    "price": 789.0,
+    "colour": "Purple",
+    "quantity": 5,
+    "description": "Built for trails rather than concrete: a longer rear end for stability in the air, knobbier tyres for loose dirt landings, and a wider bar for control on step-up jumps."
+  },
+  {
+    "slug": "twinstar-tandem",
+    "name": "Twinstar Tandem",
+    "category": "TANDEM",
+    "model": "TS-Duo",
+    "price": 3450.0,
+    "colour": "Yellow",
+    "quantity": 2,
+    "description": "A proper touring tandem with an oversized aluminium frame, timing chain, and drum brake in addition to the discs, because two riders and luggage on a long descent is a genuine amount of energy to shed."
+  },
+  {
+    "slug": "sidebyside-cruiser",
+    "name": "Side-by-Side Cruiser",
+    "category": "TANDEM",
+    "model": "SBS-C",
+    "price": 2199.0,
+    "colour": "Red",
+    "quantity": 3,
+    "description": "A relaxed tandem cruiser with swept-back bars and wide sprung saddles at both stations. Seven speeds, coaster-style stopping, and a riding position that assumes you are in no particular hurry."
+  },
+  {
+    "slug": "little-explorer-16",
+    "name": "Little Explorer 16",
+    "category": "KIDS",
+    "model": "LE-16",
+    "price": 329.0,
+    "colour": "Blue",
+    "quantity": 22,
+    "description": "A 16-inch first pedal bike, light enough for a child to pick up unaided, with removable training wheels and a chain guard. Brake levers are sized for small hands, which most kids' bikes get wrong."
+  },
+  {
+    "slug": "junior-rider-24",
+    "name": "Junior Rider 24",
+    "category": "KIDS",
+    "model": "JR-24",
+    "price": 549.0,
+    "colour": "Green",
+    "quantity": 10,
+    "description": "A 24-inch eight-speed for riders who have outgrown a first bike but not yet an adult frame. Real derailleur gearing and mechanical disc brakes, scaled down rather than cheapened."
+  }
+]
