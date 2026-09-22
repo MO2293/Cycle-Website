@@ -1,0 +1,45 @@
+@import 'tailwindcss';
+
+/*
+ * Cycle Haven design tokens.
+ *
+ * Defining the palette once here — rather than scattering hex values through
+ * components — means the whole site can be re-themed from a single place, and
+ * every page stays visually consistent by construction.
+ */
+@theme {
+  --color-ink-50: #f6f7f6;
+  --color-ink-100: #e3e7e4;
+  --color-ink-200: #c7cfc9;
+  --color-ink-400: #7d8a82;
+  --color-ink-600: #47544c;
+  --color-ink-800: #26302a;
+  --color-ink-900: #161d19;
+
+  --color-moss-50: #eef7f1;
+  --color-moss-100: #d6ecdf;
+  --color-moss-500: #2f8759;
+  --color-moss-600: #266e49;
+  --color-moss-700: #1e583a;
+
+  --color-clay-100: #fbeee2;
+  --color-clay-500: #c9703a;
+  --color-clay-600: #a85a2c;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-ink-50);
+  color: var(--color-ink-800);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Keyboard focus stays visible everywhere — removing outlines without a
+   replacement makes a site unusable without a mouse. */
+:focus-visible {
+  outline: 2px solid var(--color-moss-500);
+  outline-offset: 2px;
+}
