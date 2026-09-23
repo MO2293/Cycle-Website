@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
-import { api, formatPrice } from '../api/client'
+import { api, formatPrice, mediaUrl } from '../api/client'
 import type { Order } from '../api/types'
 import { useAuth } from '../context/AuthContext'
 import { Badge, ErrorNotice, Spinner } from '../components/ui'
@@ -78,7 +78,7 @@ export default function OrderConfirmationPage() {
           {order.lines.map((line) => (
             <li key={line.itemId} className="flex items-center gap-4 py-4">
               <img
-                src={line.imageUrl}
+                src={mediaUrl(line.imageUrl)}
                 alt=""
                 className="h-16 w-20 rounded-lg bg-ink-50 object-contain"
               />

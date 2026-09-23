@@ -137,6 +137,21 @@ export async function uploadFile<T>(path: string, file: File): Promise<T> {
   return payload as T
 }
 
+/**
+ * Resolves a server-relative media path (an item's `imageUrl`) against the API's
+ * origin.
+ *
+ * <p>The API returns `imageUrl` as a path, not an absolute URL. In development
+ * that works untouched: Vite proxies /api to the backend, so the browser's own
+ * origin serves the image. In production the frontend and the API are deployed
+ * to different hosts, and a bare path resolves against the frontend's origin —
+ * where nothing answers it, and the SPA fallback returns index.html, so the
+ * image silently renders broken. Every <img> fed by the API goes through here.
+ */
+export function mediaUrl(path: string): string {
+  return path.startsWith('http') ? path : `${BASE_URL}${path}`
+}
+
 /** Formats a number as Canadian dollars. */
 export function formatPrice(value: number): string {
   return new Intl.NumberFormat('en-CA', {

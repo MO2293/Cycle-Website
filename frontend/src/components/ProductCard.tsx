@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { formatPrice } from '../api/client'
+import { formatPrice, mediaUrl } from '../api/client'
 import type { Item } from '../api/types'
 import { CATEGORY_LABELS } from '../api/types'
 import { Badge } from './ui'
@@ -12,7 +12,7 @@ export default function ProductCard({ item }: { item: Item }) {
     >
       <div className="aspect-4/3 overflow-hidden bg-ink-50">
         <img
-          src={item.imageUrl}
+          src={mediaUrl(item.imageUrl)}
           alt={item.name}
           /* Lazy loading means a long catalogue does not fetch every image
              before the page becomes usable. */

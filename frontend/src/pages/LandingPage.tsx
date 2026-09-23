@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { api, formatPrice } from '../api/client'
+import { api, formatPrice, mediaUrl } from '../api/client'
 import type { Category, Item, PageResponse } from '../api/types'
 import { CATEGORY_LABELS } from '../api/types'
 
@@ -111,7 +111,7 @@ export default function LandingPage() {
               <Link to={`/items/${hero.id}`} className="group block">
                 <div className="overflow-hidden rounded-2xl bg-ink-50 p-6">
                   <img
-                    src={hero.imageUrl}
+                    src={mediaUrl(hero.imageUrl)}
                     alt={hero.name}
                     className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
                   />
@@ -180,7 +180,7 @@ export default function LandingPage() {
                 >
                   <div className="aspect-4/3 overflow-hidden bg-ink-50">
                     <img
-                      src={item.imageUrl}
+                      src={mediaUrl(item.imageUrl)}
                       alt={item.name}
                       loading="lazy"
                       className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"

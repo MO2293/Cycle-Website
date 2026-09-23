@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ApiError, api, formatPrice, uploadFile } from '../../api/client'
+import { ApiError, api, formatPrice, mediaUrl, uploadFile } from '../../api/client'
 import type { Category, Item, PageResponse } from '../../api/types'
 import { CATEGORY_LABELS } from '../../api/types'
 import {
@@ -246,7 +246,7 @@ export default function AdminItemsPage() {
               <tr key={item.id}>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <img src={item.imageUrl} alt="" className="h-10 w-14 rounded bg-ink-50 object-contain" />
+                    <img src={mediaUrl(item.imageUrl)} alt="" className="h-10 w-14 rounded bg-ink-50 object-contain" />
                     <div>
                       <p className="font-medium text-ink-900">{item.name}</p>
                       <p className="text-xs text-ink-400">

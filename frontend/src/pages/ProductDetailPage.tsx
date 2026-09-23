@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ApiError, api, formatPrice } from '../api/client'
+import { ApiError, api, formatPrice, mediaUrl } from '../api/client'
 import type { Item } from '../api/types'
 import { CATEGORY_LABELS } from '../api/types'
 import { useCart } from '../context/CartContext'
@@ -68,7 +68,7 @@ export default function ProductDetailPage() {
 
       <div className="mt-6 grid gap-10 md:grid-cols-2">
         <div className="overflow-hidden rounded-xl border border-ink-100 bg-white">
-          <img src={item.imageUrl} alt={item.name} className="h-full w-full object-contain" />
+          <img src={mediaUrl(item.imageUrl)} alt={item.name} className="h-full w-full object-contain" />
         </div>
 
         <div className="flex flex-col gap-4">

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ApiError, formatPrice } from '../api/client'
+import { ApiError, formatPrice, mediaUrl } from '../api/client'
 import { useCart } from '../context/CartContext'
 import {
   EmptyState,
@@ -69,7 +69,7 @@ export default function CartPage() {
               <li key={line.itemId} className="flex flex-wrap items-center gap-4 p-4">
                 <Link to={`/items/${line.itemId}`} className="shrink-0">
                   <img
-                    src={line.imageUrl}
+                    src={mediaUrl(line.imageUrl)}
                     alt={line.name}
                     className="h-20 w-28 rounded-lg bg-ink-50 object-contain"
                   />
