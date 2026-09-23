@@ -15,10 +15,11 @@ services:
     name: cyclehaven-api
     runtime: docker
     rootDir: backend
-    # Relative to the REPOSITORY root, not to rootDir above — those two fields
-    # resolve differently, and './Dockerfile' would look for one at the repo
-    # root and fail the deploy.
-    dockerfilePath: ./backend/Dockerfile
+    # Relative to rootDir above, NOT to the repository root — Render's blueprint
+    # reference says repo root, but it resolves this inside rootDir. Writing
+    # './backend/Dockerfile' here makes Render look for backend/backend/Dockerfile
+    # and fail the clone step with 'invalid local: resolve : lstat ...'.
+    dockerfilePath: ./Dockerfile
     plan: free
     region: oregon
 
