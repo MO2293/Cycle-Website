@@ -8,7 +8,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,18 +25,33 @@ import org.springframework.util.StreamUtils;
 /**
  * Loads the starter catalogue on first run.
  *
- * <p>Seeding matters more than it looks: it means a reviewer can clone the repo,
- * start the app, and immediately see a working storefront with products and
- * images. The original required importing a 12MB MySQL dump by hand before the
- * site would render anything at all.
+ * <p>Seeding matters more than it looks: a reviewer can clone the repo, start the
+ * app, and immediately see a working storefront with products and images. The
+ * original required importing a 12MB MySQL dump by hand before the site would
+ * render anything at all.
  *
- * <p>Products are only inserted when the table is empty, so restarting the
- * application never duplicates the catalogue or overwrites an admin's edits.
+ * <p>Products are only inserted when the table is empty, so restarting never
+ * duplicates the catalogue or overwrites an admin's edits.
  */
 @Configuration
 public class ItemSeeder {
 
     private static final Logger log = LoggerFactory.getLogger(ItemSeeder.class);
+
+    /**
+     * Image formats accepted for seed files, mapped to the content type they are
+     * served with. Ordered: the first match for a given slug wins, so replacing
+     * an illustration with a photograph is a matter of dropping in a .jpg — no
+     * code change and no renaming.
+     */
+    private static final Map<String, String> IMAGE_FORMATS = new LinkedHashMap<>();
+
+    static {
+        IMAGE_FORMATS.put(".jpg", "image/jpeg");
+        IMAGE_FORMATS.put(".jpeg", "image/jpeg");
+        IMAGE_FORMATS.put(".webp", "image/webp");
+        IMAGE_FORMATS.put(".png", "image/png");
+    }
 
     @Bean
     CommandLineRunner seedItems(
@@ -51,6 +69,8 @@ public class ItemSeeder {
                 seeds = List.of(objectMapper.readValue(in, SeedItem[].class));
             }
 
+            int withImages = 0;
+
             for (SeedItem seed : seeds) {
                 Item item = new Item();
                 item.setName(seed.name());
@@ -60,29 +80,39 @@ public class ItemSeeder {
                 item.setPrice(BigDecimal.valueOf(seed.price()));
                 item.setColour(seed.colour());
                 item.setQuantity(seed.quantity());
-                loadImage(seed.slug()).ifPresent(bytes -> {
-                    item.setImageData(bytes);
-                    item.setImageContentType("image/png");
-                });
+
+                Optional<SeedImage> image = loadImage(seed.slug());
+                if (image.isPresent()) {
+                    item.setImageData(image.get().bytes());
+                    item.setImageContentType(image.get().contentType());
+                    withImages++;
+                }
+
                 itemRepository.save(item);
             }
 
-            log.info("Seeded {} catalogue items", seeds.size());
+            log.info("Seeded {} catalogue items ({} with images)", seeds.size(), withImages);
         };
     }
 
-    private java.util.Optional<byte[]> loadImage(String slug) {
-        Resource resource = new ClassPathResource("seed/images/" + slug + ".png");
-        if (!resource.exists()) {
-            log.warn("No seed image found for '{}'", slug);
-            return java.util.Optional.empty();
+    /** Finds the first image matching this slug in any supported format. */
+    private Optional<SeedImage> loadImage(String slug) {
+        for (Map.Entry<String, String> format : IMAGE_FORMATS.entrySet()) {
+            Resource resource = new ClassPathResource("seed/images/" + slug + format.getKey());
+            if (!resource.exists()) {
+                continue;
+            }
+            try (InputStream in = resource.getInputStream()) {
+                return Optional.of(new SeedImage(StreamUtils.copyToByteArray(in), format.getValue()));
+            } catch (IOException ex) {
+                log.warn("Could not read seed image for '{}': {}", slug, ex.getMessage());
+            }
         }
-        try (InputStream in = resource.getInputStream()) {
-            return java.util.Optional.of(StreamUtils.copyToByteArray(in));
-        } catch (IOException ex) {
-            log.warn("Could not read seed image for '{}': {}", slug, ex.getMessage());
-            return java.util.Optional.empty();
-        }
+        log.warn("No seed image found for '{}'", slug);
+        return Optional.empty();
+    }
+
+    private record SeedImage(byte[] bytes, String contentType) {
     }
 
     /** Shape of one entry in seed/items.json. */

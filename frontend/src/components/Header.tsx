@@ -48,6 +48,10 @@ export default function Header() {
 
         <nav className="ml-auto flex items-center gap-1">
           <NavLink to="/" end className={linkClass}>
+            Home
+          </NavLink>
+
+          <NavLink to="/shop" className={linkClass}>
             Shop
           </NavLink>
 

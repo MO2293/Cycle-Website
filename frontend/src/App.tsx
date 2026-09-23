@@ -5,13 +5,14 @@ import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import CartPage from './pages/CartPage'
 import CheckoutPage from './pages/CheckoutPage'
-import HomePage from './pages/HomePage'
+import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import NotFoundPage from './pages/NotFoundPage'
 import OrderConfirmationPage from './pages/OrderConfirmationPage'
 import OrdersPage from './pages/OrdersPage'
 import ProductDetailPage from './pages/ProductDetailPage'
 import ProfilePage from './pages/ProfilePage'
+import ShopPage from './pages/ShopPage'
 import RegisterPage from './pages/RegisterPage'
 import AdminDashboardPage from './pages/admin/AdminDashboardPage'
 import AdminItemsPage from './pages/admin/AdminItemsPage'
@@ -36,7 +37,8 @@ export default function App() {
           <Routes>
             <Route element={<Layout />}>
               {/* Public */}
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/shop" element={<ShopPage />} />
               <Route path="/items/:id" element={<ProductDetailPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
