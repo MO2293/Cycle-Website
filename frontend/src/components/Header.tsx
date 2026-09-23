@@ -1,5 +1,6 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useCart } from '../context/CartContext'
 
 function BikeMark() {
   return (
@@ -20,6 +21,7 @@ function BikeMark() {
 
 export default function Header() {
   const { isAuthenticated, isAdmin, user, logout } = useAuth()
+  const { totalUnits } = useCart()
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -62,7 +64,16 @@ export default function Header() {
           )}
 
           <NavLink to="/cart" className={linkClass}>
-            Cart
+            <span className="flex items-center gap-1.5">
+              Cart
+              {/* A live count is the clearest signal that adding worked — the
+                  original gave no feedback until you opened the cart page. */}
+              {totalUnits > 0 && (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-moss-600 px-1.5 text-xs font-medium text-white">
+                  {totalUnits}
+                </span>
+              )}
+            </span>
           </NavLink>
 
           {isAuthenticated ? (

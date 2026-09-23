@@ -104,6 +104,39 @@ export const api = {
   delete: <T>(path: string, auth = true) => request<T>(path, { method: 'DELETE', auth }),
 }
 
+/**
+ * Uploads a file as multipart/form-data.
+ *
+ * <p>Separate from `request` because the Content-Type header must be omitted
+ * entirely here: the browser generates it itself, including the multipart
+ * boundary. Setting it manually produces a request the server cannot parse — a
+ * genuinely confusing failure, since the header looks correct.
+ */
+export async function uploadFile<T>(path: string, file: File): Promise<T> {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  const headers: Record<string, string> = {}
+  const token = getToken()
+  if (token) headers.Authorization = `Bearer ${token}`
+
+  const response = await fetch(`${BASE_URL}${path}`, {
+    method: 'PUT',
+    headers,
+    body: formData,
+  })
+
+  const text = await response.text()
+  const payload = text ? JSON.parse(text) : null
+
+  if (!response.ok) {
+    const error = payload as ApiErrorBody | null
+    throw new ApiError(response.status, error?.message ?? `Upload failed (${response.status})`)
+  }
+
+  return payload as T
+}
+
 /** Formats a number as Canadian dollars. */
 export function formatPrice(value: number): string {
   return new Intl.NumberFormat('en-CA', {
