@@ -1,0 +1,55 @@
+# Runs the whole stack — database, API and web — with one command.
+#
+#   docker compose up --build
+#   → http://localhost:3000
+#
+# This is what replaces the original project's setup, which required installing
+# Tomcat, installing MySQL, importing a 12MB SQL dump by hand, and editing a
+# hardcoded password in ConnectionProvider.java before anything would run.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: cyclehaven
+      POSTGRES_USER: cyclehaven
+      # Local development only. Production supplies this from a secret store.
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-localdevpassword}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cyclehaven -d cyclehaven"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://db:5432/cyclehaven
+      DATABASE_USERNAME: cyclehaven
+      DATABASE_PASSWORD: ${DB_PASSWORD:-localdevpassword}
+      # Override both of these in any real deployment.
+      # Generate a secret with: openssl rand -base64 48
+      JWT_SECRET: ${JWT_SECRET:-ZGV2LW9ubHktc2VjcmV0LW5vdC1mb3ItcHJvZHVjdGlvbi1jaGFuZ2UtbWUtcGxlYXNl}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@cyclehaven.com}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-AdminPass123!}
+      # Requests reach the API through the nginx proxy on the same origin, so
+      # no cross-origin request is ever made and CORS does not apply.
+      CORS_ALLOWED_ORIGINS: http://localhost:3000
+    depends_on:
+      # Waits for the healthcheck, not merely for the container to exist —
+      # otherwise the API starts before Postgres accepts connections and dies.
+      db:
+        condition: service_healthy
+
+  web:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  db-data:
