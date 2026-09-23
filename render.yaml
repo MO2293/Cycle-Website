@@ -15,7 +15,10 @@ services:
     name: cyclehaven-api
     runtime: docker
     rootDir: backend
-    dockerfilePath: ./Dockerfile
+    # Relative to the REPOSITORY root, not to rootDir above — those two fields
+    # resolve differently, and './Dockerfile' would look for one at the repo
+    # root and fail the deploy.
+    dockerfilePath: ./backend/Dockerfile
     plan: free
     region: oregon
 
@@ -26,6 +29,13 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
+
+      # Render defaults PORT to 10000, and application.yml binds to
+      # server.port: ${PORT:8080}. Pinning it to 8080 keeps the port the app
+      # listens on, the Dockerfile's EXPOSE and its HEALTHCHECK in agreement;
+      # otherwise the container's own health check probes a dead port.
+      - key: PORT
+        value: 8080
 
       # Render generates this and stores it encrypted. It never exists in the
       # repository, and rotating it is a dashboard action rather than a commit.
