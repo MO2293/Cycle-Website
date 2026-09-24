@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -225,21 +226,28 @@ public class OrderService {
         return OrderResponse.from(order);
     }
 
-    /** Admin sales view: every order, optionally filtered by customer email. */
+    /**
+     * Admin sales view: every order, optionally filtered by customer email.
+     *
+     * <p>The presence or absence of a filter is decided here, in Java, and each
+     * case runs its own query. Expressing it as a single query with
+     * {@code WHERE :email IS NULL OR ...} is tempting and portable-looking, but
+     * PostgreSQL cannot infer a type for a null parameter whose only use is an
+     * {@code IS NULL} test, and rejects the statement outright. H2 accepts it,
+     * so the failure appears only in production.
+     */
     @Transactional(readOnly = true)
     public Page<OrderResponse> searchOrders(String email, int page, int size) {
-        String normalised = (email == null || email.isBlank())
-                ? null
-                : email.trim().toLowerCase();
+        Pageable pageable = PageRequest.of(
+                Math.max(page, 0),
+                Math.min(Math.max(size, 1), 100),
+                Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        return orderRepository
-                .searchByCustomerEmail(
-                        normalised,
-                        PageRequest.of(
-                                Math.max(page, 0),
-                                Math.min(Math.max(size, 1), 100),
-                                Sort.by(Sort.Direction.DESC, "createdAt")))
-                .map(OrderResponse::from);
+        Page<Order> orders = (email == null || email.isBlank())
+                ? orderRepository.findAll(pageable)
+                : orderRepository.searchByCustomerEmail(email.trim().toLowerCase(), pageable);
+
+        return orders.map(OrderResponse::from);
     }
 
     @Transactional(readOnly = true)

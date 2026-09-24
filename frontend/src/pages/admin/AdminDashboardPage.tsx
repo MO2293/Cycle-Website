@@ -35,25 +35,40 @@ export default function AdminDashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // allSettled, not all: `Promise.all` rejects as soon as any one call fails,
+  // which would blank the whole dashboard because a single panel could not load.
+  // Each result is applied independently and the failures are named, so four
+  // working panels survive one broken endpoint.
   useEffect(() => {
-    Promise.all([
+    Promise.allSettled([
       api.get<SalesSummary>('/api/admin/orders/summary'),
       api.get<PageResponse<Order>>('/api/admin/orders?size=100'),
       api.get<PageResponse<Item>>('/api/items?size=100'),
       api.get<PageResponse<unknown>>('/api/admin/users?size=1'),
     ])
       .then(([summaryResult, ordersResult, itemsResult, usersResult]) => {
-        setSummary(summaryResult)
-        setOrders(ordersResult.content)
-        setItems(itemsResult.content)
-        setCustomerCount(usersResult.totalElements)
+        const failed: string[] = []
+
+        if (summaryResult.status === 'fulfilled') setSummary(summaryResult.value)
+        else failed.push('sales summary')
+
+        if (ordersResult.status === 'fulfilled') setOrders(ordersResult.value.content)
+        else failed.push('orders')
+
+        if (itemsResult.status === 'fulfilled') setItems(itemsResult.value.content)
+        else failed.push('catalogue')
+
+        if (usersResult.status === 'fulfilled') setCustomerCount(usersResult.value.totalElements)
+        else failed.push('customers')
+
+        if (failed.length > 0) {
+          setError(`Could not load: ${failed.join(', ')}. Everything else is current.`)
+        }
       })
-      .catch((err: Error) => setError(err.message))
       .finally(() => setIsLoading(false))
   }, [])
 
   if (isLoading) return <Spinner label="Loading dashboard…" />
-  if (error) return <ErrorNotice message={error} />
 
   // Revenue per category, derived by joining order lines back to the catalogue.
   // Uses priceAtPurchase, so past orders keep the price they were actually sold
@@ -75,6 +90,9 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
+      {/* A partial failure is a notice above live data, not a replacement for it. */}
+      {error && <ErrorNotice message={error} />}
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatTile
           label="Revenue"

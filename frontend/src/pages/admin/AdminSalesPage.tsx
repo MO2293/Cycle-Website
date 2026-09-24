@@ -12,6 +12,10 @@ export default function AdminSalesPage() {
 
   useEffect(() => {
     setIsLoading(true)
+    // Clear any previous failure before retrying, otherwise a stale error stays
+    // on screen forever once one request has failed — even after a later search
+    // succeeds and the table below it fills with correct data.
+    setError(null)
     const query = submittedFilter ? `?email=${encodeURIComponent(submittedFilter)}&size=100` : '?size=100'
     api
       .get<PageResponse<Order>>(`/api/admin/orders${query}`)

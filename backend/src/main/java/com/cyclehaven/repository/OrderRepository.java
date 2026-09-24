@@ -32,18 +32,25 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByOrderRef(String orderRef);
 
     /**
-     * Admin sales view: every order, optionally narrowed by customer email.
+     * Admin sales view, narrowed by customer email.
      *
      * <p>The join to {@code o.user} must be an explicit LEFT JOIN — an implicit
      * join through {@code o.user.email} would generate an inner join and silently
      * hide every guest order, which is exactly the kind of bug that makes a sales
      * report quietly wrong.
+     *
+     * <p>{@code email} is never null here. An earlier version folded the
+     * unfiltered case into this query as {@code WHERE :email IS NULL OR ...},
+     * which worked on H2 and failed on PostgreSQL: a null bound to a parameter
+     * that appears only in {@code IS NULL} carries no type information, and
+     * PostgreSQL rejects it with "could not determine data type of parameter".
+     * Whether a filter applies is a decision for Java, not for SQL — see
+     * {@code OrderService.searchOrders}.
      */
     @Query("""
             SELECT o FROM Order o
             LEFT JOIN o.user u
-            WHERE :email IS NULL
-               OR LOWER(COALESCE(u.email, o.guestEmail)) LIKE CONCAT('%', :email, '%')
+            WHERE LOWER(COALESCE(u.email, o.guestEmail)) LIKE CONCAT('%', :email, '%')
             """)
     Page<Order> searchByCustomerEmail(@Param("email") String email, Pageable pageable);
 
