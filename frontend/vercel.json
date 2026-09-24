@@ -5,14 +5,12 @@
   "framework": "vite",
   "rewrites": [
     {
-      "comment": "Single-page app: React Router owns the URL space, so every path that is not a real file must return index.html. Without this, loading /shop or /admin directly (or refreshing on them) returns a 404 from the CDN rather than reaching the router.",
       "source": "/((?!assets/).*)",
       "destination": "/index.html"
     }
   ],
   "headers": [
     {
-      "comment": "Vite fingerprints asset filenames, so a given file's contents never change and it can be cached permanently.",
       "source": "/assets/(.*)",
       "headers": [
         {

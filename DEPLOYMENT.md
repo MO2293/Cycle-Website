@@ -82,6 +82,25 @@ The catalogue seeds itself on first start, so the API comes up with all 17 produ
 
 ---
 
+## What `vercel.json` does
+
+JSON has no comment syntax and Vercel validates the file against a strict schema
+that rejects unknown properties, so the reasoning lives here instead.
+
+**`rewrites`** — `/((?!assets/).*)` → `/index.html`. React Router owns the URL space,
+but only `index.html` exists as a real file on the CDN. Without this rule, opening
+`/shop` directly or refreshing on `/admin` returns a 404 from the edge and the router
+never gets a chance to run. The negative lookahead excludes `/assets/`, so real build
+output is still served as itself rather than being swallowed by the fallback.
+
+**`headers`** — `/assets/(.*)` gets `max-age=31536000, immutable`. Vite fingerprints
+every asset filename with a content hash, so a given file's bytes never change. A new
+build produces new filenames, which means the cache can be permanent with no risk of
+serving something stale. `index.html` is deliberately excluded — it must stay
+uncached, because it is what points at the current filenames.
+
+---
+
 ## 4. Close the loop
 
 The API is still configured to reject your real frontend, because CORS was set to a
